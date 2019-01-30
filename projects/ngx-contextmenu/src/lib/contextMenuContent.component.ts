@@ -102,13 +102,25 @@ export class ContextMenuContentComponent implements OnInit, OnDestroy, AfterView
   }
 
   ngOnInit(): void {
-    this.menuItems.forEach(menuItem => {
-      menuItem.currentItem = this.item;
-      this.subscription.add(menuItem.execute.subscribe(event => this.execute.emit({ ...event, menuItem })));
-    });
-    const queryList = new QueryList<ContextMenuItemDirective>();
-    queryList.reset(this.menuItems);
-    this._keyManager = new ActiveDescendantKeyManager<ContextMenuItemDirective>(queryList).withWrap();
+      this.menuItems.forEach((menuItem) => {
+          menuItem.currentItem = this.item;
+          this.subscription.add(
+              menuItem.execute.subscribe((event) => this.execute.emit({ ...event, menuItem }))
+          );
+      });
+      const queryList = new QueryList<ContextMenuItemDirective>();
+      queryList.reset(this.menuItems);
+      this._keyManager = new ActiveDescendantKeyManager<ContextMenuItemDirective>(
+          queryList
+      ).withWrap();
+
+      let elementHeight = 14;
+
+      this.menuItems.forEach((inMenuItem) => {
+          elementHeight += inMenuItem.divider ? 19 : 26;
+      });
+
+      (this.elementRef.nativeElement as HTMLElement).style.height = elementHeight + 'px';
   }
 
   ngAfterViewInit() {
